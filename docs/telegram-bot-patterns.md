@@ -21,6 +21,24 @@ lesson, not theory.
    A stale webhook blocks long-polling with 409 and looks exactly like a
    duplicate-instance conflict. Check the webhook FIRST — it's a one-call fix.
 
+### Telling a webhook storm from a resource problem (the cliff rule)
+
+A 409 storm is sneaky: it looks like a resource issue, and under real load
+you DO get genuine 409s — so the logs aren't fully lying. **The discriminator
+is timing pattern, not volume:**
+
+- **Resource degradation** → errors climb/fall **proportionally** with load
+  (rate limits, memory, connection pool). No single time bucket dominates.
+- **Stale webhook storm** → errors **cliff**: continuous 409s from the moment
+  the webhook was set, so one minute bucket carries the majority of errors.
+
+Use `scripts/telegram_409_diagnose.py` — it checks `getWebhookInfo` first,
+then classifies the log timeline (cliff vs proportional) and prints a
+diagnosis line your alert system can include verbatim, so the alert tells you
+which type it is before you chase the wrong thing.
+
+*(Pattern credit: Dineshkumar Kannan, Platform Technical Lead.)*
+
 3. **Watchdog pattern:** cron `*/5 * * * *` running a `watchdog.sh` that does
    `pgrep -f "python3 bot.py" || restart`. The pgrep pattern MUST match the
    real process cmdline. Before stopping a bot for migration, REMOVE its

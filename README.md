@@ -23,6 +23,7 @@ thing alive on free hardware.
 │   ├── gmail_toolbox.py          # IMAP email search/extract (newsletter monitoring)
 │   ├── whatsapp_healthcheck.sh   # bridge health check + Telegram alert (cron)
 │   ├── telegram_409_diagnose.py  # 409 storm vs resource issue — cliff discriminator
+│   ├── telegram_webhook_watchdog.sh # daily stale-webhook check + alert
 │   └── gateway_restart_cron.sh   # restart systemd gateway from cron (outside process tree)
 ├── docs/
 │   ├── selfhosted-agent-stack.md # full architecture + VM sizing + services

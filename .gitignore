@@ -1,0 +1,23 @@
+# Secrets, tokens, and local state — never commit.
+.env
+*.env
+.env.*
+!*.env.example
+
+# WhatsApp / session data
+creds.json
+*.session
+session/
+lid-mapping-*.json
+
+# Python
+__pycache__/
+*.pyc
+
+# OS / editor
+.DS_Store
+*.swp
+
+# Local scratch
+/tmp/
+*.log

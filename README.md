@@ -1,5 +1,10 @@
 # Self-Hosted AI Agent Stack
 
+**Run a 24/7 AI agent on FREE cloud — Hermes + Telegram + WhatsApp, production-tested.**
+Your own AI ops center for ~$0-5/month. Built from real incidents, not tutorials.
+
+![Python](https://img.shields.io/badge/Python-3.9%2B-blue) ![License](https://img.shields.io/badge/License-MIT-green) ![Stack](https://img.shields.io/badge/Stack-Hermes%20%2B%20Telegram%20%2B%20WhatsApp-orange) ![Status](https://img.shields.io/badge/Status-Production--tested-success)
+
 Production-tested recipes, scripts, and patterns for running a **24/7 AI
 agent stack on free infrastructure** — Hermes Agent gateway + Telegram +
 WhatsApp bridge + cron watchdogs, all on an Oracle Cloud Always-Free VM for

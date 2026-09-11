@@ -16,6 +16,8 @@ Everything here comes from a system that is actually running — not from a tuto
 
 ---
 
+> Companion list: **[Awesome Agent Infrastructure](https://github.com/Amz34/awesome-agent-infrastructure)** — 135 live-checked, self-hostable building blocks for AI agents (frameworks, memory, MCP servers, RAG, local inference, evals, free-tier infra).
+
 ## Why this repo exists
 
 Every "run your own AI agent" guide stops at *"it works on my laptop."* The hard part

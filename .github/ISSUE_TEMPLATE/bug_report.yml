@@ -1,0 +1,59 @@
+name: Bug report
+description: A script or recipe did not behave as documented
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Please sanitise hostnames, IPs, tokens and personal
+        data before pasting output. Security issues go to SECURITY.md, not here.
+  - type: input
+    id: component
+    attributes:
+      label: Component
+      description: Which file or doc is affected?
+      placeholder: scripts/resource_watchdog.sh
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+      description: What happened instead? Include the exact output (redacted).
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. run `bash scripts/... --dry-run`
+        2. ...
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      description: OS/distro, kernel, CPU, RAM, disk free, and agent runtime version
+      placeholder: Ubuntu 24.04, 6.17 kernel, 2 vCPU, 12 GB RAM, 40 GB free
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-flight
+      options:
+        - label: I searched existing issues for this problem
+          required: true
+        - label: I ran the script with `--dry-run` where available
+          required: false
+        - label: I removed all secrets, hostnames and personal data from this report
+          required: true

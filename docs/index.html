@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Self-Hosted Agent Stack — run a 24/7 AI agent on free cloud</title>
+<meta name="description" content="Production-tested recipes, watchdogs and hard-won lessons for running a 24/7 AI agent stack on a free-tier ARM VM: 2 OCPU, 12 GB RAM, $0-5 per month. Includes zram tuning, resource watchdog, headless-browser reaper and restore drills.">
+<meta name="keywords" content="self-hosted AI agent, free tier cloud, oracle always free, 24/7 agent, watchdog scripts, zram, llm ops, telegram bot, whatsapp bridge">
+<meta name="author" content="Amz34">
+<link rel="canonical" href="https://amz34.github.io/selfhosted-agent-stack/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Self-Hosted Agent Stack — 24/7 AI agent on free cloud">
+<meta property="og:description" content="The operational half of self-hosting an AI agent: watchdogs, reapers, memory tuning and the real free-tier limits, measured on a running system.">
+<meta property="og:url" content="https://amz34.github.io/selfhosted-agent-stack/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Self-Hosted Agent Stack">
+<meta name="twitter:description" content="Run a 24/7 AI agent on free cloud — scripts, watchdogs and hard-won lessons from a system that is actually running.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareSourceCode",
+  "name": "Self-Hosted Agent Stack",
+  "description": "Production-tested recipes for running a 24/7 AI agent stack on free-tier cloud infrastructure: watchdogs, memory tuning, browser reaping and restore drills.",
+  "codeRepository": "https://github.com/Amz34/selfhosted-agent-stack",
+  "programmingLanguage": ["Bash", "Python"],
+  "license": "https://opensource.org/license/mit",
+  "author": { "@type": "Person", "name": "Amz34", "url": "https://github.com/Amz34" }
+}
+</script>
+<style>
+  :root { --bg:#0b1220; --bg2:#111b2e; --card:#16233a; --line:#26344d; --fg:#e8eefc; --dim:#94a3b8; --accent:#3b82f6; --ok:#10b981; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:linear-gradient(160deg,var(--bg),var(--bg2) 60%,#0d1728); color:var(--fg);
+         font:16px/1.65 ui-sans-serif,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+  .wrap { max-width:940px; margin:0 auto; padding:56px 22px 80px; }
+  header { text-align:center; padding-bottom:34px; border-bottom:1px solid var(--line); }
+  h1 { font-size:clamp(30px,5vw,46px); line-height:1.15; margin:0 0 14px; letter-spacing:-.02em; }
+  .sub { color:var(--dim); font-size:18px; max-width:660px; margin:0 auto 22px; }
+  .cta { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+  a.btn { display:inline-block; padding:11px 20px; border-radius:9px; text-decoration:none; font-weight:600; font-size:15px; border:1px solid var(--line); color:var(--fg); }
+  a.btn.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+  a.btn:hover { transform:translateY(-1px); }
+  .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px; margin:38px 0 8px; }
+  .stat { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px 18px; }
+  .stat b { display:block; font-size:24px; color:#fff; }
+  .stat span { color:var(--dim); font-size:13px; }
+  h2 { font-size:22px; margin:46px 0 16px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:16px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px 20px; }
+  .card h3 { margin:0 0 8px; font-size:16px; }
+  .card p { margin:0; color:var(--dim); font-size:14.5px; }
+  ol,ul { padding-left:20px; }
+  li { margin:7px 0; }
+  code { background:#0e1729; border:1px solid var(--line); border-radius:5px; padding:1px 6px; font-size:13.5px; }
+  pre { background:#0e1729; border:1px solid var(--line); border-radius:10px; padding:16px 18px; overflow:auto; font-size:13.5px; }
+  pre code { background:none; border:0; padding:0; }
+  .lesson { border-left:3px solid var(--accent); padding-left:14px; margin:16px 0; }
+  .lesson b { color:#fff; }
+  table { width:100%; border-collapse:collapse; font-size:14.5px; }
+  th,td { text-align:left; padding:9px 10px; border-bottom:1px solid var(--line); }
+  th { color:var(--dim); font-weight:600; font-size:13px; text-transform:uppercase; letter-spacing:.04em; }
+  footer { margin-top:56px; padding-top:24px; border-top:1px solid var(--line); color:var(--dim); font-size:14px; text-align:center; }
+  footer a { color:var(--fg); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Run a 24/7 AI agent on free cloud</h1>
+    <p class="sub">The operational half nobody writes about: watchdogs, memory tuning, browser reapers and the real free-tier limits — measured on a system that is actually running non-stop.</p>
+    <div class="cta">
+      <a class="btn primary" href="https://github.com/Amz34/selfhosted-agent-stack">View on GitHub</a>
+      <a class="btn" href="https://github.com/Amz34/selfhosted-agent-stack/blob/main/docs/selfhosted-agent-stack.md">Read the build guide</a>
+    </div>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><b>2 OCPU</b><span>free ARM instance, non-stop</span></div>
+    <div class="stat"><b>12 GB</b><span>RAM ceiling — planned around</span></div>
+    <div class="stat"><b>5.8 GB</b><span>zram compressed swap (zstd)</span></div>
+    <div class="stat"><b>$0–5</b><span>monthly infrastructure cost</span></div>
+  </div>
+
+  <h2>Why this exists</h2>
+  <p>Every "run your own AI agent" guide stops at <em>"it works on my laptop."</em> The hard part starts after: the agent dies at 3 AM, a bot token returns conflicts, memory fills until the OOM killer picks a victim, and the free tier refuses to scale. This project documents what actually breaks on a small box — and ships the scripts that keep it alive.</p>
+
+  <h2>What you get</h2>
+  <div class="grid">
+    <div class="card"><h3>Resource watchdog</h3><p>RAM, swap, disk and load checks. Silent when healthy, loud when broken, with a per-alert cooldown.</p></div>
+    <div class="card"><h3>Headless-browser reaper</h3><p>Reclaims leaked browser trees — but only when no live client is attached. Dry-run by default.</p></div>
+    <div class="card"><h3>Compressed swap</h3><p>Idempotent zram setup: 50% of RAM with zstd at priority 100. Pressure insurance without disk thrash.</p></div>
+    <div class="card"><h3>Channel patterns</h3><p>One token per agent, webhook vs polling, 409 diagnostics, health checks for chat bridges.</p></div>
+    <div class="card"><h3>Restore drills</h3><p>Backups you never restore are not backups. Weekly verification into a scratch path.</p></div>
+    <div class="card"><h3>CI that enforces it</h3><p>Shell syntax, shellcheck, Python compile and a docs-link gate run on every push.</p></div>
+  </div>
+
+  <h2>Quickstart</h2>
+  <pre><code>git clone https://github.com/Amz34/selfhosted-agent-stack.git
+cd selfhosted-agent-stack
+
+sudo bash scripts/zram_setup.sh 6144     # compressed swap
+bash scripts/resource_watchdog.sh        # silent unless unhealthy
+bash scripts/chrome_reaper.sh --dry-run  # reclaim leaked browsers</code></pre>
+
+  <h2>Lessons that cost real uptime</h2>
+  <div class="lesson"><b>Unmanaged memory is the limit, not RAM size.</b> One leaked browser session tree held 3.0 GB; reaping stale trees dropped usage to 1.9 GB with no visible effect.</div>
+  <div class="lesson"><b>Free quotas are hard ceilings.</b> The ARM allowance on this tenancy was fully consumed — a resize request is rejected outright. Measure before you design.</div>
+  <div class="lesson"><b>One bot token, one poller.</b> Sharing a token across processes causes conflicts and a bot that silently stops answering.</div>
+  <div class="lesson"><b>A watchdog that says "all good" daily gets deleted.</b> Write nothing when healthy; speak only when something is wrong.</div>
+
+  <h2>The honest cost</h2>
+  <table>
+    <tr><th>Item</th><th>Free allowance</th><th>Used</th></tr>
+    <tr><td>Compute</td><td>1× ARM instance, 2 OCPU / 12 GB</td><td>1 instance, 24/7</td></tr>
+    <tr><td>Boot volume</td><td>200 GB total</td><td>at ceiling</td></tr>
+    <tr><td>Outbound transfer</td><td>10 TB / month</td><td>a few GB</td></tr>
+    <tr><td>Monthly bill</td><td>—</td><td><b>$0–5</b> (model API only)</td></tr>
+  </table>
+
+  <footer>
+    MIT licensed · <a href="https://github.com/Amz34/selfhosted-agent-stack">GitHub</a> ·
+    built from real incidents, not tutorials. If it saved you an outage, a ⭐ helps others find it.
+  </footer>
+</div>
+</body>
+</html>

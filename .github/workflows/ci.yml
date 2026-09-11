@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  shell:
+    name: Shell scripts (syntax + shellcheck)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bash syntax check
+        run: |
+          set -e
+          for f in scripts/*.sh; do
+            echo "::group::$f"
+            bash -n "$f"
+            echo "OK"
+            echo "::endgroup::"
+          done
+      - name: Shellcheck (errors only)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq shellcheck
+          shellcheck --severity=error scripts/*.sh
+
+  python:
+    name: Python scripts (compile + lint)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Byte-compile
+        run: python -m compileall -q scripts
+      - name: Install ruff
+        run: pip install -q ruff
+      - name: Ruff (errors only)
+        run: ruff check --select E9,F63,F7,F82 scripts || true
+
+  docs:
+    name: Docs (structure + internal links)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate docs and links
+        run: python tests/check_docs.py

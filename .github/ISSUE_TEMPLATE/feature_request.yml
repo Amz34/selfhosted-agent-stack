@@ -1,0 +1,41 @@
+name: Recipe or improvement
+description: Propose a new pattern, watchdog, or documentation improvement
+title: "[idea] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What operational problem does this solve?
+      description: Describe the failure mode or gap, not the implementation.
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Contribution type
+      options:
+        - New script / watchdog
+        - Improvement to an existing script
+        - New platform recipe (different free tier or channel)
+        - Documentation fix
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence it works
+      description: Before/after numbers, logs, or the incident it prevented.
+    validations:
+      required: true
+  - type: checkboxes
+    id: rules
+    attributes:
+      label: Ground rules
+      options:
+        - label: Safe by default (destructive actions need a flag and `--dry-run`)
+          required: true
+        - label: Idempotent, and silent when healthy
+          required: true
+        - label: Contains no secrets or personal data
+          required: true

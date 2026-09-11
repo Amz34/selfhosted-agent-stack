@@ -1,23 +1,34 @@
-# Secrets, tokens, and local state — never commit.
+# Secrets and local environment — never commit these
 .env
 *.env
 .env.*
-!*.env.example
-
-# WhatsApp / session data
+!.env.example
 creds.json
-*.session
+credentials.json
+*token*.json
 session/
+*.session
 lid-mapping-*.json
+
+# Logs and runtime state
+*.log
+logs/
+*.pid
+*.sqlite
+*.db
 
 # Python
 __pycache__/
-*.pyc
+*.py[cod]
+.venv/
+venv/
 
-# OS / editor
+# Editors / OS
 .DS_Store
+.idea/
+.vscode/
 *.swp
 
 # Local scratch
-/tmp/
-*.log
+tmp/
+scratch/

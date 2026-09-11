@@ -4,7 +4,7 @@ All notable changes to this project are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.0] — Unreleased
+## [1.1.0] — 2026-09-11
 
 ### Added
 - `scripts/zram_setup.sh` — idempotent compressed-swap setup (zstd, priority 100).
